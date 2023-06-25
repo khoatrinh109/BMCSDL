@@ -1,0 +1,93 @@
+﻿/*----------------------------------------------------------
+MASV: 43.01.104.080
+HO TEN: Trịnh Anh Khoa
+LAB: 04
+NGAY: 20/04/2023
+----------------------------------------------------------*/
+USE master
+GO
+CREATE DATABASE QLSV_Lab4
+GO
+USE QLSV_Lab4
+GO
+
+--CAC CAU LENH TAO TABLE 
+
+use QLSV_Lab04
+go
+
+
+create table SINHVIEN
+(
+	MASV		NVARCHAR(20),
+	HOTEN		NVARCHAR(100)		NOT NULL,
+	NGAYSINH	DATETIME,
+	DIACHI		NVARCHAR(200),
+	MALOP		VARCHAR(20),
+	TENDN		NVARCHAR(100)		NOT NULL,
+	MATKHAU		VARBINARY(MAX)			NOT NULL,
+	
+	PRIMARY KEY(MASV)
+)
+
+create table NHANVIEN
+(
+	MANV	VARCHAR(20),
+	HOTEN	NVARCHAR(100)	NOT NULL,
+	EMAIL	VARCHAR(20),
+	LUONG	VARBINARY(MAX),
+	TENDN	NVARCHAR(100)	NOT NULL,
+	MATKHAU	VARBINARY(MAX)		NOT NULL,
+
+	PRIMARY KEY(MANV)
+)
+create table LOP
+(
+	MALOP	VARCHAR(20),
+	TENLOP	NVARCHAR(100)	NOT NULL,
+	MANV	VARCHAR(20),
+
+	PRIMARY KEY(MALOP)
+)
+
+
+
+-- CAU LENH TAO STORED PROCEDURE
+
+
+use QLSV
+go
+
+create procedure SP_INS_ENCRYPT_SINHVIEN
+@masv NVARCHAR(20), @hoten NVARCHAR(100), @ngaysinh DATETIME, @diachi NVARCHAR(200), @malop VARCHAR(20), @tendn NVARCHAR(100), @matkhau VARBINARY(MAX)
+as
+	insert SINHVIEN(MASV, HOTEN, NGAYSINH, DIACHI, MALOP, TENDN, MATKHAU)
+	values(@masv, @hoten,@ngaysinh,@diachi,@malop,@tendn, @matkhau)
+go
+
+--DROP PROCEDURE SP_INS_ENCRYPT_SINHVIEN
+EXEC SP_INS_ENCRYPT_SINHVIEN N'SV01', N'NGUYEN VAN A', '1/1/1990', N'280 AN DUONG VUONG', 'CNTT-K35', N'NVA', 0xe10adc3949ba59abbe56e057f20f883e
+select * from sinhvien
+
+--delete sinhvien
+
+--------------------------------------------------------------------------
+
+create procedure SP_INS_ENCRYPT_NHANVIEN
+@MANV VARCHAR(20),@HOTEN NVARCHAR(100),@EMAIL VARCHAR(20),@LUONG VARBINARY(MAX),@TENDN NVARCHAR(100),@MATKHAU VARBINARY(MAX)
+as
+	insert nhanvien(MANV, HOTEN, EMAIL, LUONG, TENDN, MATKHAU)
+	values(@MANV, @HOTEN, @EMAIL, @LUONG, @TENDN, @MATKHAU)
+go
+EXEC SP_INS_ENCRYPT_NHANVIEN 'NV01', 'NGUYEN VAN A', 'NVA@', 0x3EE06A4DA8B3B50F3A0CB51C021A7DDC, 'NVA', 0x7C4A8D09CA3762AF61E59520943DC26494F8941B
+select * from nhanvien
+--delete nhanvien
+-------------------------------------------------------------------------
+
+create procedure SP_SEL_ENCRYPT_NHANVIEN
+as
+	SELECT MANV, HOTEN, EMAIL, LUONG
+	FROM NHANVIEN 
+GO
+
+EXEC SP_SEL_ENCRYPT_NHANVIEN
